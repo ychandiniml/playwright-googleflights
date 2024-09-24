@@ -10,5 +10,10 @@
   "devDependencies": {
     "@playwright/test": "^1.47.2",
     "@types/node": "^22.5.5"
+  },
+  "dependencies": {
+    "csv-parser": "^3.0.0",
+    "csv-writer": "^1.6.0",
+    "fs": "^0.0.1-security"
   }
 }

@@ -1,19 +1,52 @@
-// @ts-check
-const { test, expect } = require('@playwright/test');
+const fs = require('fs');
+const csv = require('csv-parser');
+const { chromium } = require('playwright');
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+// Load city data from CSV
+async function loadCities() {
+  const cities = [];
+  return new Promise((resolve, reject) => {
+    fs.createReadStream('core_airport.csv')
+      .pipe(csv())
+      .on('data', (data) => cities.push(data))
+      .on('end', () => resolve(cities))
+      .on('error', reject);
+  });
+}
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
-});
+// Main function to scrape Google Flights
+async function scrapeAirports() {
+  const browser = await chromium.launch({ headless: false });
+  const page = await browser.newPage();
+  await page.goto('https://flights.google.com/');
 
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+  const cities = await loadCities();
+  const results = [];
 
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
+  for (const city of cities) {
+    const cityName = city.City; // Assuming CSV has 'City' field
+    await page.fill('input[placeholder="Where to?"]', cityName);
+    await page.waitForTimeout(2000); // Wait for results to load
 
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
-});
+    const airports = await page.$$eval('div.flight-card', (cards) => {
+      return cards.map(card => {
+        const cityCode = 'NYC'; // You may need to extract the actual city IATA code
+        const airportCode = card.querySelector('.airport-code').textContent.trim();
+        const airportName = card.querySelector('.airport-name').textContent.trim();
+        const distance = card.querySelector('.distance').textContent.trim();
+        return { cityCode, airportCode, airportName, distance };
+      });
+    });
+
+    results.push(...airports);
+  }
+
+  await browser.close();
+
+  // Write the results to CSV
+  const output = results.map(r => `${r.cityCode}, ${r.airportCode}, ${r.airportName}, ${r.distance}`).join('\n');
+  fs.writeFileSync('output.csv', output);
+  console.log('Scraping complete, data saved to output.csv');
+}
+
+scrapeAirports().catch(console.error);
