@@ -26,25 +26,16 @@ async function scrapeAirports() {
   const page = await browser.newPage();
   await page.goto('https://flights.google.com/');
 
-  // const cities = await loadCities(); // Load all cities from the CSV
-//  const cities = await loadCities();
- const cities = [{
-  "city_name": "New York",
-  "iata_code": "NYK"
-},
-{
-  "city_name": "Bangalore",
-  "iata_code": "BLR"
-}]
-
-  console.log("Loaded cities:", cities);
+  // const cities = await loadCities();
+  const cities = [{
+    "city_name": "Bengaluru",
+    "iata_code": "BLR"
+  }]
+  console.log("cities", cities);
   const results = [];
-  //*[@id="ow10"]/div[1]/div/div/input
 
   for (const city of cities) {
-    const cityName = city.city_name; // Change this based on your CSV header
-    const iataCode = city.iata_code; // Change this based on your CSV header
-
+    const cityName = city.city_name;
     if (!cityName) {
       console.error('City name is undefined for row:', city);
       continue;
@@ -52,38 +43,29 @@ async function scrapeAirports() {
 
     console.log(`Searching for flights from city: ${cityName}`);
 
-    // Clear the input field using the specified class selector
-    await page.fill(".II2One.j0Ppje.zmMKJ.LbIaRd", ''); // Clear the input field first
-    await page.fill(".II2One.j0Ppje.zmMKJ.LbIaRd", cityName); // Fill with city name
+    await page.fill('input[placeholder="Where to?"]', cityName);
     await page.waitForTimeout(2000);
 
-    console.log("Entered ", cityName);
+    console.log("entered ", cityName);
 
     const airports = await page.$$eval('.n4HaVc.Elfbjb.VgAC5d', (cards) => {
+      console.log("cards", cards);
       return cards.map(card => {
         const airportCode = card.querySelector('.P1pPOe')?.textContent.trim();
         const airportName = card.querySelector('.zsRT0d')?.textContent.trim();
-        const distance = card.querySelector('.t7Thuc')?.textContent.trim();
+        const distance = card.querySelector('.t7Thuc');
         return { airportCode, airportName, distance };
       }).filter(airport => airport.airportCode && airport.airportName && airport.distance);
-    });
-    
-    await page.keyboard.press('Enter'); 
-
-    // Add IATA code to each airport entry
-    airports.forEach(airport => {
-      airport.cityName = cityName;
-      airport.iataCode = iataCode; // Include the IATA code from the city
     });
 
     console.log(cityName, " airports: ", airports);
     results.push(...airports);
   }
+  // TODO: clear the input and re-enter next cityname
 
   await browser.close();
 
-  // Prepare output with IATA codes
-  const output = results.map(r => `${r.iataCode}, ${r.airportCode}, ${r.airportName}, ${r.distance}`).join('\n');
+  const output = results.map(r => `${r.airportCode}, ${r.airportName}, ${r.distance}`).join('\n');
   fs.writeFileSync('output.csv', output);
   console.log('Scraping complete, data saved to output.csv');
 }
