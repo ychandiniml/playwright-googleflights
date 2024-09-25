@@ -1,0 +1,73 @@
+[
+  {
+    "id": "ccoin5jckbjdd1hmcm91svld",
+    "name": "BRUSSELS",
+    "iata_code": "BRU",
+    "state_code": "",
+    "region_code": "Europe",
+    "data": {
+      "name": "Brussels, Belgium",
+      "description": "City in Belgium.",
+      "airports": [
+        {
+          "name": "Brussels Airport",
+          "iataCode": "BRU",
+          "distance": "11 km to destination."
+        },
+        {
+          "name": "Brussels South Charleroi Airport",
+          "iataCode": "CRL",
+          "distance": "40 km to destination."
+        },
+        {
+          "name": "St. Louis Lambert International Airport",
+          "iataCode": "STL",
+          "distance": "29 km to destination."
+        },
+        {
+          "name": "Chicago O'Hare International Airport",
+          "iataCode": "ORD",
+          "distance": "307 km to destination."
+        },
+        {
+          "name": "Milwaukee Mitchell International Airport",
+          "iataCode": "MKE",
+          "distance": "200 km to destination."
+        },
+        {
+          "name": "Green Bay Austin Straubel International Airport",
+          "iataCode": "GRB",
+          "distance": "48 km to destination."
+        }
+      ]
+    }
+  },
+  {
+    "id": "neyj1lu67n55rzt05k0leo45",
+    "name": "AACHEN",
+    "iata_code": "AAH",
+    "state_code": "",
+    "region_code": "Europe",
+    "data": {
+      "name": "Aachen, Germany",
+      "description": "City in Germany.",
+      "airports": [
+        {
+          "name": "Düsseldorf Airport",
+          "iataCode": "DUS",
+          "distance": "74 km to destination."
+        },
+        {
+          "name": "Cologne Bonn Airport",
+          "iataCode": "CGN",
+          "distance": "75 km to destination."
+        },
+        {
+          "name": "Maastricht Aachen Airport",
+          "iataCode": "MST",
+          "distance": "26 km to destination."
+        }
+      ]
+    }
+  }
+]
