@@ -26,24 +26,14 @@ async function scrapeAirports() {
   const page = await browser.newPage();
   await page.goto('https://flights.google.com/');
 
-  // const cities = await loadCities(); // Load all cities from the CSV
-//  const cities = await loadCities();
- const cities = [{
-  "city_name": "New York",
-  "iata_code": "NYK"
-},
-{
-  "city_name": "Bangalore",
-  "iata_code": "BLR"
-}]
+  const cities = await loadCities();
 
   console.log("Loaded cities:", cities);
   const results = [];
-  //*[@id="ow10"]/div[1]/div/div/input
 
   for (const city of cities) {
-    const cityName = city.city_name; // Change this based on your CSV header
-    const iataCode = city.iata_code; // Change this based on your CSV header
+    const cityName = city.city_name; 
+    const iataCode = city.iata_code; 
 
     if (!cityName) {
       console.error('City name is undefined for row:', city);
@@ -53,8 +43,8 @@ async function scrapeAirports() {
     console.log(`Searching for flights from city: ${cityName}`);
 
     // Clear the input field using the specified class selector
-    await page.fill(".II2One.j0Ppje.zmMKJ.LbIaRd", ''); // Clear the input field first
-    await page.fill(".II2One.j0Ppje.zmMKJ.LbIaRd", cityName); // Fill with city name
+    await page.fill(".II2One.j0Ppje.zmMKJ.LbIaRd", ''); 
+    await page.fill(".II2One.j0Ppje.zmMKJ.LbIaRd", cityName); 
     await page.waitForTimeout(2000);
 
     console.log("Entered ", cityName);
@@ -73,7 +63,7 @@ async function scrapeAirports() {
     // Add IATA code to each airport entry
     airports.forEach(airport => {
       airport.cityName = cityName;
-      airport.iataCode = iataCode; // Include the IATA code from the city
+      airport.iataCode = iataCode; 
     });
 
     console.log(cityName, " airports: ", airports);
