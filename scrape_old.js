@@ -38,6 +38,7 @@ async function scrapeAirports() {
   //   }
   // ];
   
+  
   if (uniqueCities.length === 0) {
     console.error('No unique cities found. Exiting...');
     return;

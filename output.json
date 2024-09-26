@@ -12,32 +12,32 @@
         {
           "name": "Brussels Airport",
           "iataCode": "BRU",
-          "distance": "11 km to destination."
+          "distance": 11
         },
         {
           "name": "Brussels South Charleroi Airport",
           "iataCode": "CRL",
-          "distance": "40 km to destination."
+          "distance": 40
         },
         {
           "name": "St. Louis Lambert International Airport",
           "iataCode": "STL",
-          "distance": "29 km to destination."
+          "distance": 29
         },
         {
           "name": "Chicago O'Hare International Airport",
           "iataCode": "ORD",
-          "distance": "307 km to destination."
+          "distance": 307
         },
         {
           "name": "Milwaukee Mitchell International Airport",
           "iataCode": "MKE",
-          "distance": "200 km to destination."
+          "distance": 200
         },
         {
           "name": "Green Bay Austin Straubel International Airport",
           "iataCode": "GRB",
-          "distance": "48 km to destination."
+          "distance": 48
         }
       ]
     }
@@ -55,17 +55,17 @@
         {
           "name": "Düsseldorf Airport",
           "iataCode": "DUS",
-          "distance": "74 km to destination."
+          "distance": 74
         },
         {
           "name": "Cologne Bonn Airport",
           "iataCode": "CGN",
-          "distance": "75 km to destination."
+          "distance": 75
         },
         {
           "name": "Maastricht Aachen Airport",
           "iataCode": "MST",
-          "distance": "26 km to destination."
+          "distance": 26
         }
       ]
     }

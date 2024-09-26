@@ -7,11 +7,9 @@ async function loadCities() {
   
   console.log('Loaded cities:', cities);
 
-  // const uniqueCities = [...new Set(cities.map(city => city.name))];
   const uniqueCities = cities.filter(city => city.name)
-  .filter((city, index, self) => 
-    index === self.findIndex(c => c.name === city.name));
-
+    .filter((city, index, self) => 
+      index === self.findIndex(c => c.name === city.name))
 
   console.log('Unique cities:', uniqueCities);
   
@@ -23,25 +21,19 @@ async function scrapeAirports() {
   const page = await browser.newPage();
   await page.goto('https://flights.google.com/');
 
-  // const uniqueCities = await loadCities();  
-  const uniqueCities = [
-    {
-      id: "ccoin5jckbjdd1hmcm91svld",
-      name: "BRUSSELS",
-      iata_code: "BRU",
-      state_code:"",
-      region_code: "Europe"
-    },
-    {
-      id: "neyj1lu67n55rzt05k0leo45",
-      name: "AACHEN",
-      iata_code: "AAH",
-      state_code:"",
-      region_code: "Europe"
-    }
-  ];
+  const uniqueCities = await loadCities();  
 
-  
+  // Checkpoint file to resume from
+  const checkpointFile = 'checkpoint.json';
+  let startIndex = 0;
+
+  // Load checkpoint if it exists
+  if (fs.existsSync(checkpointFile)) {
+    const checkpointData = JSON.parse(fs.readFileSync(checkpointFile, 'utf8'));
+    startIndex = checkpointData.lastProcessedIndex || 0;
+    console.log(`Resuming from index: ${startIndex}`);
+  }
+
   if (uniqueCities.length === 0) {
     console.error('No unique cities found. Exiting...');
     return;
@@ -49,7 +41,8 @@ async function scrapeAirports() {
 
   const results = [];
 
-  for (const city of uniqueCities) {
+  for (let i = startIndex; i < uniqueCities.length; i++) {
+    const city = uniqueCities[i];
     const id = city.id; 
     const name = city.name;  
     const iata_code = city.iata_code;  
@@ -73,7 +66,8 @@ async function scrapeAirports() {
       return cards.map(card => {
         const name = card.querySelector('.zsRT0d')?.textContent.trim();
         const iataCode = card.querySelector('.P1pPOe')?.textContent.trim();
-        const distance = card.querySelector('.t7Thuc')?.textContent.trim();
+        const distanceText = card.querySelector('.t7Thuc')?.textContent.trim();
+        const distance = distanceText ? parseInt(distanceText.replace(" km", "")) : null; // Remove ' km' and convert to number
         return {name, iataCode, distance };
       }).filter(airport => airport.name && airport.iataCode && airport.distance);
     });
@@ -101,6 +95,8 @@ async function scrapeAirports() {
     });
 
     console.log(name, " airports: ", airports);
+    fs.writeFileSync(checkpointFile, JSON.stringify({ lastProcessedIndex: i + 1 }, null, 2));
+
   }
 
   await browser.close();
@@ -110,5 +106,3 @@ async function scrapeAirports() {
 }
 
 scrapeAirports().catch(console.error);
-
-
